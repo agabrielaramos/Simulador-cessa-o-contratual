@@ -1,0 +1,69 @@
+from datetime import datetime
+
+def calcular_acerto_contas(salario_base, data_inicio, data_baixa, data_fim, ferias_gozadas_vencidas=0, pago_em_duodecimos=False):
+    # Converter strings para objetos datetime
+    d_inicio = datetime.strptime(data_inicio, "%Y-%m-%d")
+    d_baixa = datetime.strptime(data_baixa, "%Y-%m-%d")
+    d_fim = datetime.strptime(data_fim, "%Y-%m-%d")
+    
+    # 1. Calcular dias efetivos antes da baixa no ano da cessação (2026)
+    inicio_ano_cessacao = datetime(d_fim.year, 1, 1)
+    
+    # Dias totais que deveria trabalhar no ano antes da baixa
+    dias_efetivos_ano = (d_baixa - inicio_ano_cessacao).days
+    
+    # Taxa diária com base em 365 dias
+    valor_diario = salario_base / 365
+    
+    # 2. Direitos Vencidos a 1 de Janeiro (Referentes ao ano anterior)
+    ferias_vencidas_dias = 22 - ferias_gozadas_vencidas
+    valor_ferias_vencidas = (salario_base / 22) * ferias_vencidas_dias if ferias_vencidas_dias > 0 else 0
+    valor_sub_ferias_vencido = salario_base if ferias_gozadas_vencidas == 0 else 0 # Simplificado se não recebeu
+    
+    if pago_em_duodecimos:
+        valor_sub_ferias_vencido = 0 # Se já foi pago mensalmente no ano anterior
+        
+    # 3. Proporcionais do Ano de Cessação (Apenas dias efetivos)
+    valor_sub_natal_prop = valor_diario * dias_efetivos_ano
+    valor_sub_ferias_prop = valor_diario * dias_efetivos_ano
+    dias_ferias_prop = (22 / 365) * dias_efetivos_ano
+    valor_ferias_prop = valor_diario * dias_efetivos_ano
+    
+    # 4. Totais
+    total_empresa = valor_ferias_vencidas + valor_sub_ferias_vencido + valor_sub_natal_prop + valor_sub_ferias_prop + valor_ferias_prop
+    
+    # Dias de Baixa (para Prestações Compensatórias da Seg. Social)
+    dias_baixa = (d_fim - d_baixa).days + 1
+    
+    # Output Estruturado
+    print("="*60)
+    print(f"📊 SIMULADOR DE ACERTO DE CONTAS (Com Baixa Prolongada)")
+    print("="*60)
+    print(f"🗓️  Dias efetivos trabalhados em {d_fim.year}: {dias_efetivos_ano} dias")
+    print(f"🤒  Dias de afastamento por baixa médica: {dias_baixa} dias (Suspensão)")
+    print("-"*60)
+    print(f"💰 DIREITOS VENCIDOS (A 01/01/{d_fim.year}):")
+    print(f"   - Férias Vencidas Não Gozadas ({ferias_vencidas_dias} dias): {valor_ferias_vencidas:.2f} €")
+    print(f"   - Subsídio de Férias Vencido: {valor_sub_ferias_vencido:.2f} €")
+    print("-"*60)
+    print(f"📈 PROPORCIONAIS DO ANO DE CESSAÇÃO ({d_fim.year}):")
+    print(f"   - Proporcional Subsídio de Natal: {valor_sub_natal_prop:.2f} €")
+    print(f"   - Proporcional Subsídio de Férias: {valor_sub_ferias_prop:.2f} €")
+    print(f"   - Proporcional Férias Não Gozadas ({dias_ferias_prop:.2f} dias): {valor_ferias_prop:.2f} €")
+    print("="*60)
+    print(f"💵 TOTAL BRUTO A PAGAR PELA EMPRESA: {total_empresa:.2f} €")
+    print("="*60)
+    print(f"🛡️  A PEDIR À SEGURANÇA SOCIAL (Prestações Compensatórias):")
+    print(f"   - Deve requerer o valor correspondente aos {dias_baixa} dias de baixa")
+    print(f"     para os Subsídios de Natal e Férias.")
+    print("="*60)
+
+# --- EXECUÇÃO COM OS SEUS DADOS ---
+calcular_acerto_contas(
+    salario_base=950.00,
+    data_inicio="2019-12-02",
+    data_baixa="2026-03-09", # Data em que iniciou a baixa prolongada
+    data_fim="2026-09-26",    # Data de cessação do contrato
+    ferias_gozadas_vencidas=0, # Altere se tiver gozado dias das 22 férias de Jan/2026
+    pago_em_duodecimos=False
+)
