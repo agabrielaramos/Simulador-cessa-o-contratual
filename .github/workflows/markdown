@@ -1,0 +1,34 @@
+# Simulador de Acerto de Contas com Baixa Prolongada (Portugal)
+
+Este é um simulador em Python desenvolvido para calcular as contas de cessação de contrato de trabalho em Portugal (revogação, caducidade ou denúncia por iniciativa do trabalhador), considerando o impacto exato de uma **baixa médica prolongada** (suspensão de contrato nos termos do Artigo 296.º do Código do Trabalho).
+
+## 🚀 Funcionalidades
+- **Separação de Direitos Vencidos:** Garante a proteção total das férias ganhas a 1 de janeiro do ano de cessação.
+- **Impacto de Baixa Prolongada:** Desconta automaticamente o período de suspensão de contrato, apurando os dias efetivos devidos pela empresa.
+- **Proporcionais do Ano de Cessação:** Calcula os proporcionais de Subsídio de Natal, Férias e respetivo subsídio com base na regra de divisão por 365 dias (padrão ACT).
+- **Indicação de Prestações Compensatórias:** Alerta para o número de dias que devem ser reclamados junto da Segurança Social.
+
+## 📋 Como Usar
+
+1. Certifique-se de que tem o Python instalado no seu computador.
+2. Clone este repositório ou descarregue o ficheiro `simulador.py`.
+3. Execute o script no terminal:
+   ```bash
+   python simulador.py
+   ```
+
+## 🛠️ Configuração dos Dados
+No final do ficheiro `simulador.py`, pode alterar os parâmetros da função para testar diferentes cenários:
+```python
+calcular_acerto_contas(
+    salario_base=950.00,        # O seu salário bruto mensal
+    data_inicio="2019-12-02",   # Data de admissão na empresa
+    data_baixa="2026-03-09",    # Data de início da baixa prolongada
+    data_fim="2026-09-26",      # Data de cessação do contrato
+    ferias_gozadas_vencidas=0,  # Dias de férias gozados em 2026 antes da baixa
+    pago_em_duodecimos=False    # Se recebia subsídios mensalmente (True/False)
+)
+```
+
+## ⚖️ Aviso Legal
+Este simulador serve fins meramente informativos e demonstrativos com base nas fórmulas gerais da ACT (Autoridade para as Condições do Trabalho). Não dispensa a consulta de um profissional de recursos humanos, advogado ou dos serviços oficiais da ACT.
